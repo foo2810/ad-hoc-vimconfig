@@ -2,7 +2,8 @@
 
 # Copyright (c) 2023 hogedamari
 # Released under the MIT license
-# License notice: LICENSE
+# License notice:
+# https://github.com/foo2810/ad-hoc-vimconfig/blob/main/LICENSE
 
 
 VIMRC_PATH=$(realpath ~/.vimrc)
