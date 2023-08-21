@@ -12,7 +12,7 @@ Installation
 
 Execute following command in your terminal.
 ```
-curl -fsSL <URL> | bash
+curl -fsSL https://raw.githubusercontent.com/foo2810/ad-hoc-vimconfig/main/install.sh | bash
 ```
 
 License
