@@ -47,7 +47,7 @@ set backspace=indent,eol,start
 
 
 " --- Color Schemes ---
-set background=light
+set background=dark
 
 " For syntax highlight in tmux
 if &term == "tmux"
