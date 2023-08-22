@@ -7,7 +7,7 @@
 
 
 VIMRC_PATH=$(realpath ~/.vimrc)
-VIMRC_URL=      # TODO: set url
+VIMRC_URL="https://raw.githubusercontent.com/foo2810/ad-hoc-vimconfig/main/.vimrc"
 
 select_yes_no() {
     local ans
