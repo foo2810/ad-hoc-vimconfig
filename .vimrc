@@ -75,6 +75,10 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " Toggle Comments: Map Ctrl + /
 vmap <C-_> <esc>`<<Cmd>call g:Toggle_Comment()<CR>
 nmap <C-_> v<esc>`<<Cmd>call g:Toggle_Comment()<CR>
+
+" Remove trailing blanks: Map Ctrl + L
+vmap <C-L> <esc><Cmd>call g:Remember_current_pos_visual_mode()<CR>:'<,'>s/\s*$//g<CR>:noh<CR><Cmd>call g:Return_remembered_pos("start")<CR>
+nmap <C-L> <esc><Cmd>call g:Remember_current_pos_visual_mode()<CR>ggv<S-G>:s/\s*$//g<CR>:noh<CR><Cmd>call g:Return_remembered_pos("start")<CR>
 " --- end ---
 
 
@@ -177,6 +181,29 @@ function! g:Toggle_Comment_Enditer()
     endfor
     " call feedkeys("\<Cmd>call cursor(" . b:tc_vraw_begin . "," . b:tc_vcol_begin . ")\<CR>")
     call cursor(b:tc_vraw_last, b:tc_min_col)
+endfunction
+" --- end ---
+
+
+" --- Remove trailing blanks ---
+function! g:Remember_current_pos_visual_mode() abort
+    " last position of visual mode
+    let l:pos_begin = getpos('.')
+    let [b:rcp_vraw_begin, b:rcp_vcol_begin] = [l:pos_begin[1], l:pos_begin[2]]
+
+    " start position of visual mode
+    let l:pos_last = getpos("'>")
+    let [b:rcp_vraw_last, b:rcp_vcol_last] = [l:pos_last[1], l:pos_last[2]]
+endfunction
+
+function! g:Return_remembered_pos(whence) abort
+    if a:whence == "start"
+        call cursor(b:rcp_vraw_begin, b:rcp_vcol_begin)
+    elseif a:whence == "end"
+        call cursor(b:rcp_vraw_last, b:rcp_vcol_last)
+    else
+        throw "Error: invalid whence, \"" . a:whence . "\""
+    endif
 endfunction
 " --- end ---
 
