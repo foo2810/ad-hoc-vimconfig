@@ -3,17 +3,18 @@
 " License notice:
 " https://github.com/foo2810/ad-hoc-vimconfig/blob/main/LICENSE
 
-" Vim Configurations
-" ==================
+" ======== Vim Configurations ========
 
-" --- Highlight ---
+" --- Editor Options (global) ---
+
+" Highlight
 syntax on
 let g:loaded_matchparen = 1
-" --- end ---
 
 " Filetype
 filetype plugin indent on
 
+"  View
 set number
 set showcmd
 set title
@@ -48,24 +49,25 @@ set backspace=indent,eol,start
 " --- end ---
 
 
-" --- Color Schemes ---
+" --- Color Schemes (global) ---
 set background=dark
 
 " For syntax highlight in tmux
 if &term == "tmux"
     set termguicolors
-endif 
+endif
 
 colorscheme desert
 " --- end ---
 
 
-" --- Misc ---
+" --- Misc (global) ---
 set writebackup
 set swapfile
 set wrapscan
 
 set viminfo='100,<50,s10,h,n~/.viminfo
+
 " Remenber last cursor position
 augroup post_read
     au!
@@ -262,3 +264,5 @@ function! s:set_config_sh()
     let b:comment_str = "#"
 endfunction
 "  --- end ---
+
+" ======== END ========
