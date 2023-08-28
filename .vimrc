@@ -71,7 +71,113 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 " --- end ---
 
 
-" --- Key Mapping ---
+" --- Key Mapping (global) ---
+" Toggle Comments: Map Ctrl + /
+vmap <C-_> <esc>`<<Cmd>call g:Toggle_Comment()<CR>
+nmap <C-_> v<esc>`<<Cmd>call g:Toggle_Comment()<CR>
+" --- end ---
+
+
+" --- Toggle Comments ---
+function! g:Toggle_Comment() abort
+    " last position of visual mode
+    let l:pos_begin = getpos('.')
+    let [b:tc_vraw_begin, b:tc_vcol_begin] = [l:pos_begin[1], l:pos_begin[2]]
+
+    " start position of visual mode
+    let l:pos_last = getpos("'>")
+    let [b:tc_vraw_last, b:tc_vcol_last] = [l:pos_last[1], l:pos_last[2]]
+
+    " move cursor to begin position of visual area
+    call cursor(b:tc_vraw_begin, b:tc_vcol_begin)
+
+    let l:n_lines= abs(b:tc_vraw_last - b:tc_vraw_begin + 1)
+
+    " check first non-blank character and kind of the character
+    let b:tc_min_col = 1000000000
+    let b:tg_uncomment = 1     " uncomment if all lines are comments
+    if l:n_lines >= 2
+        call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>j\<esc>")
+        for i in range(l:n_lines - 2)
+            call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>j\<esc>")
+        endfor
+        call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>\<esc>")
+        call feedkeys("\<Cmd>call g:Toggle_Comment_Enditer()\<CR>\<esc>")
+    elseif l:n_lines == 1
+        call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>j\<esc>")
+        call feedkeys("\<Cmd>call g:Toggle_Comment_Enditer()\<CR>\<esc>")
+    else
+        throw "THIS IS BUG: the number of target lines must be more than 1"
+    endif
+
+endfunction
+
+function! g:Toggle_Comment_Iter()
+    let l:comment_str_len = strlen(b:comment_str)
+    let l:str = getline('.')[col('.')-1:col('.')+l:comment_str_len-1]
+    let l:pos = getpos(".")
+
+    " ignore empty line
+    if getline('.') =~ '^\s*$'
+        return
+    endif
+
+    " b:comment_str = "//" does not work as expected
+    if l:str !~ b:comment_str
+        let b:tg_uncomment = 0
+    endif
+
+    if exists("b:tc_min_col")
+        if l:pos[2] < b:tc_min_col
+            let b:tc_min_col = l:pos[2]
+        endif
+    else
+        let b:tc_min_col = l:pos[2]
+    endif
+endfunction
+
+function! g:Toggle_Comment_Enditer()
+    for i in range(b:tc_vraw_begin, b:tc_vraw_last)
+        "call cursor(b:tc_vraw_begin, b:tc_min_col)
+        call cursor(i, b:tc_min_col)
+        let l:comment_str_len = strlen(b:comment_str)
+        let l:cur_line = getline('.')
+        let l:str = l:cur_line[col('.')-1:col('.')+l:comment_str_len-1]
+
+        if b:tg_uncomment
+            " b:comment_str = "//" does not work as expected
+            if l:str =~ b:comment_str
+                " call feedkeys("\<Cmd>call cursor(" . i . "," . b:tc_min_col . ")\<CR>xx\<esc>")
+                if b:tc_min_col > 1
+                    let l:new_line = l:cur_line[:b:tc_min_col-2] . l:cur_line[b:tc_min_col+l:comment_str_len:]
+                elseif b:tc_min_col == 1
+                    let l:new_line = l:cur_line[l:comment_str_len:]
+                else
+                    throw "THIS IS BUG: b:tc_min_col must be more than 1 (uncomment)"
+                endif
+                let g:tmp = l:new_line
+                call setline(i, l:new_line)
+            endif
+        else
+            call cursor(i, 1)
+
+            " ignore empty line
+            if getline('.') !~ '^\s*$'
+                " call feedkeys("\<Cmd>call cursor(" . i . "," . b:tc_min_col . ")\<CR>i" . b:comment_str . " \<esc>")
+                if b:tc_min_col > 1
+                    let l:new_line = l:cur_line[:b:tc_min_col-2] . b:comment_str . " " . l:cur_line[b:tc_min_col-1:]
+                elseif b:tc_min_col == 1
+                    let l:new_line = b:comment_str . " " . l:cur_line
+                else
+                    throw "THIS IS BUG: b:tc_min_col must be more than 1 (set comment)"
+                endif
+                call setline(i, l:new_line)
+            endif
+        endif
+    endfor
+    " call feedkeys("\<Cmd>call cursor(" . b:tc_vraw_begin . "," . b:tc_vcol_begin . ")\<CR>")
+    call cursor(b:tc_vraw_last, b:tc_min_col)
+endfunction
 " --- end ---
 
 
