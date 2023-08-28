@@ -23,7 +23,7 @@ set noruler    " disable "ruler"
 set laststatus=2
 " To get details, type "help statusline" or 
 " see https://vim-jp.org/vimdoc-ja/options.html#'statusline'
-set statusline=%m\ %f\ Pos:%l,%v(%p%%) 
+set statusline=%m\ %f\ <%{&filetype}>\ Pos:%l,%v(%p%%)
 
 " Tab
 set expandtab
