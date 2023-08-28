@@ -67,7 +67,10 @@ set wrapscan
 
 set viminfo='100,<50,s10,h,n~/.viminfo
 " Remenber last cursor position
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup post_read
+    au!
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup END
 " --- end ---
 
 
