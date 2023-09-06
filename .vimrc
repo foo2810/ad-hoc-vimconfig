@@ -160,7 +160,7 @@ function! g:Toggle_Comment_Enditer()
                 if b:tc_min_col > 1
                     let l:new_line = l:cur_line[:b:tc_min_col-2] . l:cur_line[b:tc_min_col+l:comment_str_len:]
                 elseif b:tc_min_col == 1
-                    let l:new_line = l:cur_line[l:comment_str_len:]
+                    let l:new_line = l:cur_line[l:comment_str_len+1:]
                 else
                     throw "THIS IS BUG: b:tc_min_col must be more than 1 (uncomment)"
                 endif
