@@ -78,12 +78,12 @@ augroup END
 
 " --- Key Mapping (global) ---
 " Toggle Comments: Map Ctrl + /
-vmap <C-_> <esc>`<<Cmd>call g:Toggle_Comment()<CR>
-nmap <C-_> v<esc>`<<Cmd>call g:Toggle_Comment()<CR>
+vmap <C-_> <esc>`<:call g:Toggle_Comment()<CR>
+nmap <C-_> v<esc>`<:call g:Toggle_Comment()<CR>
 
 " Remove trailing blanks: Map Ctrl + L
-vmap <C-L> <esc><Cmd>call g:Remember_current_pos_visual_mode()<CR>:'<,'>s/\s*$//g<CR>:noh<CR><Cmd>call g:Return_remembered_pos("start")<CR>
-nmap <C-L> <esc><Cmd>call g:Remember_current_pos_visual_mode()<CR>ggv<S-G>:s/\s*$//g<CR>:noh<CR><Cmd>call g:Return_remembered_pos("start")<CR>
+vmap <C-L> <esc>:call g:Remember_current_pos_visual_mode()<CR>:'<,'>s/\s*$//g<CR>:noh<CR>:call g:Return_remembered_pos("start")<CR>
+nmap <C-L> <esc>:call g:Remember_current_pos_visual_mode()<CR>ggv<S-G>:s/\s*$//g<CR>:noh<CR>:call g:Return_remembered_pos("start")<CR>
 " --- end ---
 
 
@@ -106,15 +106,15 @@ function! g:Toggle_Comment() abort
     let b:tc_min_col = 1000000000
     let b:tg_uncomment = 1     " uncomment if all lines are comments
     if l:n_lines >= 2
-        call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>j\<esc>")
+        call feedkeys("_:call g:Toggle_Comment_Iter()\<CR>j\<esc>")
         for i in range(l:n_lines - 2)
-            call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>j\<esc>")
+            call feedkeys("_:call g:Toggle_Comment_Iter()\<CR>j\<esc>")
         endfor
-        call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>\<esc>")
-        call feedkeys("\<Cmd>call g:Toggle_Comment_Enditer()\<CR>\<esc>")
+        call feedkeys("_:call g:Toggle_Comment_Iter()\<CR>\<esc>")
+        call feedkeys(":call g:Toggle_Comment_Enditer()\<CR>\<esc>")
     elseif l:n_lines == 1
-        call feedkeys("_\<Cmd>call g:Toggle_Comment_Iter()\<CR>j\<esc>")
-        call feedkeys("\<Cmd>call g:Toggle_Comment_Enditer()\<CR>\<esc>")
+        call feedkeys("_:call g:Toggle_Comment_Iter()\<CR>j\<esc>")
+        call feedkeys(":call g:Toggle_Comment_Enditer()\<CR>\<esc>")
     else
         throw "THIS IS BUG: the number of target lines must be more than 1"
     endif
@@ -156,7 +156,7 @@ function! g:Toggle_Comment_Enditer()
         if b:tg_uncomment
             " b:comment_str = "//" does not work as expected
             if l:str =~ b:comment_str
-                " call feedkeys("\<Cmd>call cursor(" . i . "," . b:tc_min_col . ")\<CR>xx\<esc>")
+                " call feedkeys(":call cursor(" . i . "," . b:tc_min_col . ")\<CR>xx\<esc>")
                 if b:tc_min_col > 1
                     let l:new_line = l:cur_line[:b:tc_min_col-2] . l:cur_line[b:tc_min_col+l:comment_str_len:]
                 elseif b:tc_min_col == 1
@@ -172,7 +172,7 @@ function! g:Toggle_Comment_Enditer()
 
             " ignore empty line
             if getline('.') !~ '^\s*$'
-                " call feedkeys("\<Cmd>call cursor(" . i . "," . b:tc_min_col . ")\<CR>i" . b:comment_str . " \<esc>")
+                " call feedkeys(":call cursor(" . i . "," . b:tc_min_col . ")\<CR>i" . b:comment_str . " \<esc>")
                 if b:tc_min_col > 1
                     let l:new_line = l:cur_line[:b:tc_min_col-2] . b:comment_str . " " . l:cur_line[b:tc_min_col-1:]
                 elseif b:tc_min_col == 1
@@ -184,7 +184,7 @@ function! g:Toggle_Comment_Enditer()
             endif
         endif
     endfor
-    " call feedkeys("\<Cmd>call cursor(" . b:tc_vraw_begin . "," . b:tc_vcol_begin . ")\<CR>")
+    " call feedkeys(":call cursor(" . b:tc_vraw_begin . "," . b:tc_vcol_begin . ")\<CR>")
     call cursor(b:tc_vraw_last, b:tc_min_col)
 endfunction
 " --- end ---
