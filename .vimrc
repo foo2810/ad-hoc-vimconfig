@@ -22,7 +22,7 @@ set title
 " Status Line
 set noruler    " disable "ruler"
 set laststatus=2
-" To get details, type "help statusline" or 
+" To get details, type "help statusline" or
 " see https://vim-jp.org/vimdoc-ja/options.html#'statusline'
 set statusline=%m\ %f\ <%{&filetype}>\ Pos:%l,%v(%p%%)
 
@@ -104,7 +104,7 @@ function! g:Toggle_Comment() abort
 
     " check first non-blank character and kind of the character
     let b:tc_min_col = 1000000000
-    let b:tg_uncomment = 1     " uncomment if all lines are comments
+    let b:tc_uncomment = 1     " uncomment if all lines are comments
     if l:n_lines >= 2
         call feedkeys("_:call g:Toggle_Comment_Iter()\<CR>j\<esc>")
         for i in range(l:n_lines - 2)
@@ -133,7 +133,7 @@ function! g:Toggle_Comment_Iter()
 
     " b:comment_str = "//" does not work as expected
     if l:str !~ b:comment_str
-        let b:tg_uncomment = 0
+        let b:tc_uncomment = 0
     endif
 
     if exists("b:tc_min_col")
@@ -153,7 +153,7 @@ function! g:Toggle_Comment_Enditer()
         let l:cur_line = getline('.')
         let l:str = l:cur_line[col('.')-1:col('.')+l:comment_str_len-1]
 
-        if b:tg_uncomment
+        if b:tc_uncomment
             " b:comment_str = "//" does not work as expected
             if l:str =~ b:comment_str
                 " call feedkeys(":call cursor(" . i . "," . b:tc_min_col . ")\<CR>xx\<esc>")
@@ -164,7 +164,6 @@ function! g:Toggle_Comment_Enditer()
                 else
                     throw "THIS IS BUG: b:tc_min_col must be more than 1 (uncomment)"
                 endif
-                let g:tmp = l:new_line
                 call setline(i, l:new_line)
             endif
         else
