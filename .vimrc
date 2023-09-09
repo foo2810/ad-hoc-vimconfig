@@ -157,13 +157,7 @@ function! g:Toggle_Comment_Enditer()
             " b:comment_str = "//" does not work as expected
             if l:str =~ b:comment_str
                 " call feedkeys(":call cursor(" . i . "," . b:tc_min_col . ")\<CR>xx\<esc>")
-                if b:tc_min_col > 1
-                    let l:new_line = l:cur_line[:b:tc_min_col-2] . l:cur_line[b:tc_min_col+l:comment_str_len:]
-                elseif b:tc_min_col == 1
-                    let l:new_line = l:cur_line[l:comment_str_len+1:]
-                else
-                    throw "THIS IS BUG: b:tc_min_col must be more than 1 (uncomment)"
-                endif
+                let l:new_line = substitute(l:cur_line, ''.b:comment_str.'\s\?', '', "")
                 call setline(i, l:new_line)
             endif
         else
