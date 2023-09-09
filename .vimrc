@@ -126,7 +126,7 @@ function! g:Toggle_Comment_Iter()
     let l:str = getline('.')[col('.')-1:col('.')+l:comment_str_len-1]
     let l:pos = getpos(".")
 
-    " ignore empty line
+    " ignore line not include characters without white space
     if getline('.') =~ '^\s*$'
         return
     endif
@@ -161,7 +161,7 @@ function! g:Toggle_Comment_Enditer()
         else
             call cursor(i, 1)
 
-            " ignore empty line
+            " ignore line not include characters without white space
             if getline('.') !~ '^\s*$'
                 if b:tc_min_col > 1
                     let l:new_line = l:cur_line[:b:tc_min_col-2] . b:comment_str . " " . l:cur_line[b:tc_min_col-1:]
