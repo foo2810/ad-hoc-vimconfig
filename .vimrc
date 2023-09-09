@@ -147,7 +147,6 @@ endfunction
 
 function! g:Toggle_Comment_Enditer()
     for i in range(b:tc_vraw_begin, b:tc_vraw_last)
-        "call cursor(b:tc_vraw_begin, b:tc_min_col)
         call cursor(i, b:tc_min_col)
         let l:comment_str_len = strlen(b:comment_str)
         let l:cur_line = getline('.')
@@ -156,7 +155,6 @@ function! g:Toggle_Comment_Enditer()
         if b:tc_uncomment
             " b:comment_str = "//" does not work as expected
             if l:str =~ b:comment_str
-                " call feedkeys(":call cursor(" . i . "," . b:tc_min_col . ")\<CR>xx\<esc>")
                 let l:new_line = substitute(l:cur_line, ''.b:comment_str.'\s\?', '', "")
                 call setline(i, l:new_line)
             endif
@@ -165,7 +163,6 @@ function! g:Toggle_Comment_Enditer()
 
             " ignore empty line
             if getline('.') !~ '^\s*$'
-                " call feedkeys(":call cursor(" . i . "," . b:tc_min_col . ")\<CR>i" . b:comment_str . " \<esc>")
                 if b:tc_min_col > 1
                     let l:new_line = l:cur_line[:b:tc_min_col-2] . b:comment_str . " " . l:cur_line[b:tc_min_col-1:]
                 elseif b:tc_min_col == 1
@@ -177,7 +174,6 @@ function! g:Toggle_Comment_Enditer()
             endif
         endif
     endfor
-    " call feedkeys(":call cursor(" . b:tc_vraw_begin . "," . b:tc_vcol_begin . ")\<CR>")
     call cursor(b:tc_vraw_last, b:tc_min_col)
 endfunction
 " --- end ---
