@@ -40,9 +40,15 @@ set textwidth=0
 " c.f. https://qiita.com/qtamaki/items/4da4ead3f2f9a525591a
 set hidden
 
-" if signcolumn=yes, then
-" always display sign column (for vim-lsp)
-set signcolumn=no
+" signcolumn depends on vim v7.4.2201 or newer
+" 95ec9d6a6 (tag: v7.4.2201) patch 7.4.2201
+" Problem:    The sign column disappears when the last sign is deleted.
+" Solution:   Add the 'signcolumn' option. (Christian Brabandt)
+if exists("&signcolumn")
+    " if signcolumn=yes, then
+    " always display sign column (for vim-lsp)
+    set signcolumn=no
+endif
 
 " https://vi.stackexchange.com/questions/2162/why-doesnt-the-backspace-key-work-in-insert-mode
 set backspace=indent,eol,start
