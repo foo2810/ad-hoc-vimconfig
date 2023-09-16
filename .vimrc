@@ -95,6 +95,11 @@ nmap <C-L> <esc>:call g:Remember_current_pos_visual_mode()<CR>ggv<S-G>:s/\s*$//g
 
 " --- Toggle Comments ---
 function! g:Toggle_Comment() abort
+    if !exists("b:comment_str")
+        echo "Not supported file type"
+        return
+    endif
+
     " last position of visual mode
     let l:pos_begin = getpos('.')
     let [b:tc_vraw_begin, b:tc_vcol_begin] = [l:pos_begin[1], l:pos_begin[2]]
