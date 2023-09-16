@@ -51,7 +51,7 @@ function! s:run_testcase(test_func_name, test_desc)
     endtry
 endfunction
 
-let s:wfile = "test.out.c"
+let s:wfile = "test.out"
 function! s:prep_test_common()
     set nomore
     set noswapfile
@@ -77,7 +77,7 @@ function! s:toggle_comment_and_comp(test_id, start_line, n_lines, base_file, ref
         " see "help: normal"
         execute("normal \<C-_>")
         execute("normal \<esc>")
-        execute("w! test.out.c")
+        execute("w!" . s:wfile)
         execute("e!")
     catch /.*/
         call s:log_test([printf("Error(test%d): %s in %s", a:test_id, v:exception, v:throwpoint)])
@@ -205,6 +205,18 @@ function! s:test10_normal_blank_line()
     return 0
 endfunction
 
+function! s:test11_unsupported_filetype()
+    let l:base_file = s:sample_code_dir . "/text_sample.txt"
+
+    call s:prep_test_common()
+    let l:ret = s:toggle_comment_and_comp(11, 5, 3, l:base_file, l:base_file)
+    call s:post_test_common()
+    if l:ret != 0
+        return l:ret
+    endif
+    return 0
+endfunction
+
 
 call s:run_testcase("s:test1_visual_same_level_level1", "Toggling comment in same level lines: level1, visual mode")
 call s:run_testcase("s:test2_visual_same_level_level_gt2", "Toggling comment in same level lines: level greater than 2, visual mode")
@@ -217,6 +229,8 @@ call s:run_testcase("s:test7_normal_level1", "Toggling comment: level1, normal m
 call s:run_testcase("s:test8_normal_level_gt2", "Toggling comment: level greater than 2, normal mode")
 call s:run_testcase("s:test9_normal_no_space", "Toggling comment in comment line without a single space between comment str and non-whitespace character: normal mode")
 call s:run_testcase("s:test10_normal_blank_line", "Toggling comment in blank lines: visual mode")
+
+call s:run_testcase("s:test11_unsupported_filetype", "Toggling comment in unsupported file type")
 
 call s:log_test([printf("PASS: %d", s:pass), printf("FAIL: %d", s:fail)])
 
