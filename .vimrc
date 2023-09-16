@@ -244,7 +244,7 @@ function! s:set_config_python()
 endfunction
 
 function! s:set_config_make()
-    setlocal expandtab
+    setlocal noexpandtab
     setlocal tabstop=4
     setlocal shiftwidth=4
 
