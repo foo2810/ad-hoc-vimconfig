@@ -18,6 +18,7 @@ filetype plugin indent on
 set number
 set showcmd
 set title
+set wildmenu
 
 " Status Line
 set noruler    " disable "ruler"
