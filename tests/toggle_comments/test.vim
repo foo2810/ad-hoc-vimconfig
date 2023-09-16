@@ -6,13 +6,13 @@
 let s:test_name = "test_toggle_comment"
 let s:sample_code_dir = "sample_codes"
 
-" let s:log_file = s:test_name . ".log"
-" call writefile([""], s:log_file)
+let s:log_file = "test.log"
+call writefile([""], s:log_file)
 function! s:log_test(msgs)
-    " call writefile(a:msgs, s:log_file, "a")
+    call writefile(a:msgs, s:log_file, "a")
 
-    let l:tty = "/dev/" . system("ps --no-headers -o %y " . getpid())
-    silent call system(printf("echo -e \"%s\" > %s", join(a:msgs, "\n"), l:tty))
+    " let l:tty = "/dev/" . system("ps --no-headers -o %y " . getpid())
+    " silent call system(printf("echo -e \"%s\" > %s", join(a:msgs, "\n"), l:tty))
 endfunction
 
 let s:pass = 0
