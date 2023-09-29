@@ -40,3 +40,7 @@ jobs:
         if: ${{ always() }}
         run: cat tests/toggle_comments/test.log
 
+      - name: Show test log (trim trailing spaces)
+        if: ${{ always() }}
+        run: cat tests/trim_trailing_spaces/test.log
+

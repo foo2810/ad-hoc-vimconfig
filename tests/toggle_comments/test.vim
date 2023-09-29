@@ -62,7 +62,7 @@ function! s:post_test_common()
     call system(printf("rm -f %s", s:wfile))
 endfunction
 
-function! s:toggle_comment_and_comp(test_id, start_line, n_lines, base_file, ref_file)
+function! s:toggle_comment_and_comp(start_line, n_lines, base_file, ref_file)
     execute(printf("e %s", a:base_file))
 
     " Move cursor and type normal cmds
@@ -80,7 +80,7 @@ function! s:toggle_comment_and_comp(test_id, start_line, n_lines, base_file, ref
         execute("w!" . s:wfile)
         execute("e!")
     catch /.*/
-        call s:log_test([printf("Error(test%d): %s in %s", a:test_id, v:exception, v:throwpoint)])
+        call s:log_test([printf("Error: %s in %s", v:exception, v:throwpoint)])
         return 1
     endtry
 
@@ -90,17 +90,17 @@ function! s:toggle_comment_and_comp(test_id, start_line, n_lines, base_file, ref
         \ ))
     let l:diff_out = split(l:diff_out, "\n")
     if v:shell_error != 0
-        call s:log_test([printf("Fail(test%d): diff fail", a:test_id)]+l:diff_out)
+        call s:log_test([printf("Fail: diff fail")]+l:diff_out)
         return 1
     endif
 
     return 0
 endfunction
 
-function! s:test_toggle_comment(test_id, start_line, n_lines, base_file, ref_file)
+function! s:test_toggle_comment(start_line, n_lines, base_file, ref_file)
     call s:prep_test_common()
     call s:log_test(["Testing comment out"])
-    let l:ret = s:toggle_comment_and_comp(a:test_id, a:start_line, a:n_lines, a:base_file, a:ref_file)
+    let l:ret = s:toggle_comment_and_comp(a:start_line, a:n_lines, a:base_file, a:ref_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -108,7 +108,7 @@ function! s:test_toggle_comment(test_id, start_line, n_lines, base_file, ref_fil
 
     call s:prep_test_common()
     call s:log_test(["Testing uncomment"])
-    let l:ret = s:toggle_comment_and_comp(a:test_id, a:start_line, a:n_lines, a:ref_file, a:base_file)
+    let l:ret = s:toggle_comment_and_comp(a:start_line, a:n_lines, a:ref_file, a:base_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -122,25 +122,25 @@ endfunction
 function! s:test1_visual_same_level_level1()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
     let l:ref_file = s:sample_code_dir . "/c_sample_test1_w_comment.c"
-    return s:test_toggle_comment(1, 10, 2, l:base_file, l:ref_file)
+    return s:test_toggle_comment(10, 2, l:base_file, l:ref_file)
 endfunction
 
 function! s:test2_visual_same_level_level_gt2()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
     let l:ref_file = s:sample_code_dir . "/c_sample_test2_w_comment.c"
-    return s:test_toggle_comment(2, 16, 2, l:base_file, l:ref_file)
+    return s:test_toggle_comment(16, 2, l:base_file, l:ref_file)
 endfunction
 
 function! s:test3_visual_diff_level()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
     let l:ref_file = s:sample_code_dir . "/c_sample_test3_w_comment.c"
-    return s:test_toggle_comment(3, 15, 3, l:base_file, l:ref_file)
+    return s:test_toggle_comment(15, 3, l:base_file, l:ref_file)
 endfunction
 
 function! s:test4_visual_mix()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
     let l:ref_file = s:sample_code_dir . "/c_sample_test4_w_comment.c"
-    return s:test_toggle_comment(4, 14, 4, l:base_file, l:ref_file)
+    return s:test_toggle_comment(14, 4, l:base_file, l:ref_file)
 endfunction
 
 function! s:test5_visual_no_space()
@@ -148,7 +148,7 @@ function! s:test5_visual_no_space()
     let l:ref_file = s:sample_code_dir . "/c_sample_test5_uncommented.c"
 
     call s:prep_test_common()
-    let l:ret = s:toggle_comment_and_comp(5, 19, 3, l:base_file, l:ref_file)
+    let l:ret = s:toggle_comment_and_comp(19, 3, l:base_file, l:ref_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -160,7 +160,7 @@ function! s:test6_visual_blank_line()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
 
     call s:prep_test_common()
-    let l:ret = s:toggle_comment_and_comp(6, 12, 2, l:base_file, l:base_file)
+    let l:ret = s:toggle_comment_and_comp(12, 2, l:base_file, l:base_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -171,13 +171,13 @@ endfunction
 function! s:test7_normal_level1()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
     let l:ref_file = s:sample_code_dir . "/c_sample_test7_w_comment.c"
-    return s:test_toggle_comment(7, 10, -1, l:base_file, l:ref_file)
+    return s:test_toggle_comment(10, -1, l:base_file, l:ref_file)
 endfunction
 
 function! s:test8_normal_level_gt2()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
     let l:ref_file = s:sample_code_dir . "/c_sample_test8_w_comment.c"
-    return s:test_toggle_comment(8, 16, -1, l:base_file, l:ref_file)
+    return s:test_toggle_comment(16, -1, l:base_file, l:ref_file)
 endfunction
 
 function! s:test9_normal_no_space()
@@ -185,7 +185,7 @@ function! s:test9_normal_no_space()
     let l:ref_file = s:sample_code_dir . "/c_sample_test9_uncommented.c"
 
     call s:prep_test_common()
-    let l:ret = s:toggle_comment_and_comp(9, 19, -1, l:base_file, l:ref_file)
+    let l:ret = s:toggle_comment_and_comp(19, -1, l:base_file, l:ref_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -197,7 +197,7 @@ function! s:test10_normal_blank_line()
     let l:base_file = s:sample_code_dir . "/c_sample.c"
 
     call s:prep_test_common()
-    let l:ret = s:toggle_comment_and_comp(10, 12, -1, l:base_file, l:base_file)
+    let l:ret = s:toggle_comment_and_comp(12, -1, l:base_file, l:base_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -209,7 +209,7 @@ function! s:test11_unsupported_filetype()
     let l:base_file = s:sample_code_dir . "/text_sample.txt"
 
     call s:prep_test_common()
-    let l:ret = s:toggle_comment_and_comp(11, 5, 3, l:base_file, l:base_file)
+    let l:ret = s:toggle_comment_and_comp(5, 3, l:base_file, l:base_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
