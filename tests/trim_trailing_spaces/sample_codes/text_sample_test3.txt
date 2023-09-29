@@ -1,0 +1,11 @@
+
+This is for a test. (trailing spaces)  
+This is for a test. (trailing Tabs)			
+head !"#$%&'()=~|[]{}@`:*;+,./\<>?_ tail (many kinds of symbol)
+
+    This is for a test. (spaces at beginning)  
+    
+	This is for a test. (tab at beginning)  
+	
+This is for a test. (no trailing blanks)
+
