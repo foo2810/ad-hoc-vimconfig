@@ -59,7 +59,7 @@ function! s:post_test_common()
     call system(printf("rm -f %s", s:wfile))
 endfunction
 
-function! s:trim_trailing_spaces_and_comp(test_id, start_line, n_lines, base_file, ref_file)
+function! s:trim_trailing_spaces_and_comp(start_line, n_lines, base_file, ref_file)
     execute(printf("e %s", a:base_file))
 
     " Move cursor and type normal cmds
@@ -77,7 +77,7 @@ function! s:trim_trailing_spaces_and_comp(test_id, start_line, n_lines, base_fil
         execute("w!" . s:wfile)
         execute("e!")
     catch /.*/
-        call s:log_test([printf("Error(test%d): %s in %s", a:test_id, v:exception, v:throwpoint)])
+        call s:log_test([printf("Error: %s in %s", v:exception, v:throwpoint)])
         return 1
     endtry
 
@@ -87,17 +87,17 @@ function! s:trim_trailing_spaces_and_comp(test_id, start_line, n_lines, base_fil
         \ ))
     let l:diff_out = split(l:diff_out, "\n")
     if v:shell_error != 0
-        call s:log_test([printf("Fail(test%d): diff fail", a:test_id)]+l:diff_out)
+        call s:log_test([printf("Fail: diff fail")]+l:diff_out)
         return 1
     endif
 
     return 0
 endfunction
 
-function! s:test_trim_trailing_spaces(test_id, start_line, n_lines, base_file, ref_file)
+function! s:test_trim_trailing_spaces(start_line, n_lines, base_file, ref_file)
     call s:prep_test_common()
     call s:log_test(["Testing triming trailing spaces"])
-    let l:ret = s:trim_trailing_spaces_and_comp(a:test_id, a:start_line, a:n_lines, a:base_file, a:ref_file)
+    let l:ret = s:trim_trailing_spaces_and_comp(a:start_line, a:n_lines, a:base_file, a:ref_file)
     call s:post_test_common()
     if l:ret != 0
         return l:ret
@@ -110,25 +110,25 @@ endfunction
 function! s:test1_entire_file()
     let l:base_file = s:sample_code_dir . "/text_sample.txt"
     let l:ref_file = s:sample_code_dir . "/text_sample_test1.txt"
-    return s:test_trim_trailing_spaces(1, 1, -1, l:base_file, l:ref_file)
+    return s:test_trim_trailing_spaces(1, -1, l:base_file, l:ref_file)
 endfunction
 
 function! s:test2_visual_multiple_lines()
     let l:base_file = s:sample_code_dir . "/text_sample.txt"
     let l:ref_file = s:sample_code_dir . "/text_sample_test2.txt"
-    return s:test_trim_trailing_spaces(2, 2, 9, l:base_file, l:ref_file)
+    return s:test_trim_trailing_spaces(2, 9, l:base_file, l:ref_file)
 endfunction
 
 function! s:test3_visual_single_line()
     let l:base_file = s:sample_code_dir . "/text_sample.txt"
     let l:ref_file = s:sample_code_dir . "/text_sample_test3.txt"
-    return s:test_trim_trailing_spaces(3, 4, 1, l:base_file, l:ref_file)
+    return s:test_trim_trailing_spaces(4, 1, l:base_file, l:ref_file)
 endfunction
 
 " function! s:test4_normal_single_line()
 "     let l:base_file = s:sample_code_dir . "/text_sample.txt"
 "     let l:ref_file = s:sample_code_dir . "/text_sample_test4.txt"
-"     return s:test_trim_trailing_spaces(4, 4, ?, l:base_file, l:ref_file)
+"     return s:test_trim_trailing_spaces(4, ?, l:base_file, l:ref_file)
 " endfunction
 
 
