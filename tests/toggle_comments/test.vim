@@ -42,10 +42,7 @@ function! s:run_testcase(test_func_name, test_desc)
     endif
 
     try
-        call s:log_test([
-            \ printf("End Test %d", s:cnt_test),
-            \ "=================================================="
-            \ ])
+        call s:log_test([printf("End Test %d", s:cnt_test), "=================================================="])
     catch /.*/
         call s:log_test(["Error(run_testcase): ".v:exception." in ".v:throwpoint])
     endtry
@@ -84,13 +81,10 @@ function! s:toggle_comment_and_comp(start_line, n_lines, base_file, ref_file)
         return 1
     endtry
 
-    let l:diff_out = system(printf("diff -u --color=never %s %s",
-        \ s:wfile,
-        \ a:ref_file
-        \ ))
-    let l:diff_out = split(l:diff_out, "\n")
+    let l:diff_out_raw = system(printf("diff -u --color=never %s %s", s:wfile, a:ref_file))
+    let l:diff_out = split(l:diff_out_raw, "\n")
     if v:shell_error != 0
-        call s:log_test([printf("Fail: diff fail")]+l:diff_out)
+        call s:log_test(["Fail: not match with expected output"]+l:diff_out)
         return 1
     endif
 
@@ -217,6 +211,24 @@ function! s:test11_unsupported_filetype()
     return 0
 endfunction
 
+
+" load .vimrc
+try
+    execute "source " . "../../.vimrc"
+    execute "e!"
+catch /.*/
+    call s:log_test([printf("Error: Failed to load .vimrc at %s: %s", v:exception, v:throwpoint)])
+    cq!
+endtry
+
+" load plugins
+" let s:plug_path = ".vim/plugin/xxx.vim"
+" try
+"     execute "source " . s:plug_path
+" catch /.*/
+"     call s:log_test([printf("Error: Failed to load plugin (%s) at %s: %s", plug_path, v:exception, v:throwpoint)])
+"     cq!
+" endtry
 
 call s:run_testcase("s:test1_visual_same_level_level1", "Toggling comment in same level lines: level1, visual mode")
 call s:run_testcase("s:test2_visual_same_level_level_gt2", "Toggling comment in same level lines: level greater than 2, visual mode")
