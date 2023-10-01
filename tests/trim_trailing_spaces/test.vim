@@ -39,10 +39,7 @@ function! s:run_testcase(test_func_name, test_desc)
     endif
 
     try
-        call s:log_test([
-            \ printf("End Test %d", s:cnt_test),
-            \ "=================================================="
-            \ ])
+        call s:log_test([printf("End Test %d", s:cnt_test), "=================================================="])
     catch /.*/
         call s:log_test(["Error(run_testcase): ".v:exception." in ".v:throwpoint])
     endtry
@@ -81,13 +78,10 @@ function! s:trim_trailing_spaces_and_comp(start_line, n_lines, base_file, ref_fi
         return 1
     endtry
 
-    let l:diff_out = system(printf("diff -u --color=never %s %s",
-        \ s:wfile,
-        \ a:ref_file
-        \ ))
-    let l:diff_out = split(l:diff_out, "\n")
+    let l:diff_out_raw = system(printf("diff -u --color=never %s %s", s:wfile, a:ref_file))
+    let l:diff_out = split(l:diff_out_raw, "\n")
     if v:shell_error != 0
-        call s:log_test([printf("Fail: diff fail")]+l:diff_out)
+        call s:log_test(["Fail: not match with expected output"]+l:diff_out)
         return 1
     endif
 
@@ -131,6 +125,24 @@ endfunction
 "     return s:test_trim_trailing_spaces(4, ?, l:base_file, l:ref_file)
 " endfunction
 
+
+" load .vimrc
+try
+    execute "source " . "../../.vimrc"
+    execute "e!"
+catch /.*/
+    call s:log_test([printf("Error: Failed to load .vimrc at %s: %s", v:exception, v:throwpoint)])
+    cq!
+endtry
+
+" load plugins
+" let s:plug_path = ".vim/plugin/xxx.vim"
+" try
+"     execute "source " . s:plug_path
+" catch /.*/
+"     call s:log_test([printf("Error: Failed to load plugin (%s) at %s: %s", plug_path, v:exception, v:throwpoint)])
+"     cq!
+" endtry
 
 call s:run_testcase("s:test1_entire_file", "Trim trailing spaces for an entire file")
 call s:run_testcase("s:test2_visual_multiple_lines", "Trim trailing spaces in selected multiple lines in visual mode")
