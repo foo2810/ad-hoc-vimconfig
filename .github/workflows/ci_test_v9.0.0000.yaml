@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Test on vim v9.0.0000
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: ["main", "devel"]
+  pull_request:
+    branches: [ "*" ]
+    types: ["opened", "synchronize", "reopened"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Uninstall pre-installed vim
+        run: sudo apt-get purge -y vim
+
+      - name: Build and instal vim
+        run: sudo bash tests/prep_vim_env.sh v9.0.0000
+
+      - name: Check vim version
+        run: vim --version
+
+      - name: Run test scripts
+        run: bash tests/run.sh
+
+      - name: Show test log (toggle comment)
+        if: ${{ always() }}
+        run: cat tests/toggle_comments/test.log
+
+      - name: Show test log (trim trailing spaces)
+        if: ${{ always() }}
+        run: cat tests/trim_trailing_spaces/test.log
+
