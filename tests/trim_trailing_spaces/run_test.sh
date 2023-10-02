@@ -9,7 +9,11 @@ BASEDIR="$(dirname $0)"
 PREV_POS="$(pwd)"
 
 cd "$BASEDIR"
-vim --not-a-term -fn -S test.vim sample_codes/text_sample.txt > /dev/null
+OPTS=
+if vim -h | grep -e "--not-a-term" > /dev/null; then
+	OPTS="--not-a-term"
+fi
+vim $OPTS -fn -S test.vim sample_codes/text_sample.txt > /dev/null
 test_status=$?
 cd "${PREV_POS}"
 
