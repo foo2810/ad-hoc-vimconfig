@@ -5,8 +5,9 @@ name: Test on vim v7.4
 # Controls when the workflow will run
 on:
   push:
-    branches: ["main", "devel"]
+    branches: ["main"]
   pull_request:
+    # Target of pull request is any branches
     branches: [ "*" ]
     types: ["opened", "synchronize", "reopened"]
 
