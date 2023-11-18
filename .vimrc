@@ -227,6 +227,8 @@ augroup per_file_type_config
     au!
     au FileType vim call s:set_config_vim()
     au FileType c call s:set_config_c()
+    au FileType cpp call s:set_config_c()
+    au FileType rust call s:set_config_rust()
     au FileType python call s:set_config_python()
     au FileTYpe make call s:set_config_make()
     au FileTYpe sh call s:set_config_sh()
@@ -241,6 +243,14 @@ function! s:set_config_vim()
 endfunction
 
 function! s:set_config_c()
+    setlocal noexpandtab
+    setlocal tabstop=4
+    setlocal shiftwidth=4
+
+    let b:comment_str = "//"
+endfunction
+
+function! s:set_config_rust()
     setlocal noexpandtab
     setlocal tabstop=4
     setlocal shiftwidth=4
