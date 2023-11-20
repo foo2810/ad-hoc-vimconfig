@@ -251,7 +251,7 @@ function! s:set_config_c()
 endfunction
 
 function! s:set_config_rust()
-    setlocal noexpandtab
+    setlocal expandtab
     setlocal tabstop=4
     setlocal shiftwidth=4
 
