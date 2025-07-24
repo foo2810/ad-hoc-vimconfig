@@ -232,6 +232,7 @@ augroup per_file_type_config
     au FileType python call s:set_config_python()
     au FileTYpe make call s:set_config_make()
     au FileTYpe sh call s:set_config_sh()
+    au FileTYpe perl call s:set_config_perl()
 augroup END
 
 function! s:set_config_vim()
@@ -275,6 +276,14 @@ function! s:set_config_make()
 endfunction
 
 function! s:set_config_sh()
+    setlocal noexpandtab
+    setlocal tabstop=4
+    setlocal shiftwidth=4
+
+    let b:comment_str = "#"
+endfunction
+
+function! s:set_config_perl()
     setlocal noexpandtab
     setlocal tabstop=4
     setlocal shiftwidth=4
